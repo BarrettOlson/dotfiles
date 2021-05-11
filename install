@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# Very convoluted but best way I can find to get the full path for the symlink
+PWDS=$(pwd)
+DIRS=$(dirname $0)
+if [[ "$PWDS" != "$DIRS" ]]; then
+    pushd $(pwd)/$(basename $(dirname $0)) >/dev/null && SRC=$(pwd) && popd >/dev/null
+    pushd "$SRC" >/dev/null # work in the directory the script is in
+else
+    SRC=$(pwd) && pushd "$(pwd)" >/dev/null
+fi
+
+# All of the simple thing that need a simple link
+LINK="tmux.conf zshrc zshenv vimrc gitignore_global tmux"
+for f in $LINK; do
+    if [ -e "$HOME/.$f" ]; then
+        if [[ $* == *--overwrite* || $IN_DEVCONTAINER = true ]]; then
+            echo "[ dotfiles ] $f exists – removing and relinking"
+            rm "$HOME/.$f" && ln -s -f "$SRC/$f" "$HOME/.$f"
+        else
+            echo "[ dotfiles ] $f exists – skipping"
+        fi
+    else
+        echo "[ dotfiles ] $f does not exist – linking"
+        # -f shouldn't be needed but vscode dev container has a weird bug
+        ln -s -f "$SRC/$f" "$HOME/.$f"
+    fi
+done
+
+# Optional Additions
+# Set up git
+if [[ $* == *--with-git-configs* ]]; then
+    if [[ ! -e "$HOME/.gitconfig" ]]; then
+        echo "[ gitconfig ] writing basic git config"
+        git config --global core.excludesfile "$SRC/.gitignore_global"
+        git config --global user.name "Barrett Olson"
+        git config --global user.email "barrett@barrettolson.com"
+        git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+        git config --global pull.rebase true
+        git config --global help.autocorrect 5
+        git config --global rebase.autostash true
+        # git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
+    else
+        echo "[ gitconfig ] gitconfig exists – skipping"
+    fi
+else
+    echo "[ dotfiles ] Skipping writing basic git config (add --with-git-config if desired)"
+fi
+
+# set up folder for our persistent vim logs
+# echo "[ logs ] creating and setting permissions on log directories"
+# mkdir -p "$HOME/.logs/vim-undodir"
+
+#vim customization
+if [[ $* == *--with-vim-plugins* ]]; then
+    # Install vundle
+    mkdir -p "$HOME/.vim/bundle"
+    rm -Rf "$HOME/.vim/bundle/"
+    git clone -q "https://github.com/VundleVim/Vundle.vim.git" "$HOME/.vim/bundle/Vundle.vim"
+
+    # Install vim plugins
+    vim +PluginInstall +qall
+else
+    echo "[ dotfiles ] Skipping vim customizations (add --with-vim-plugins if desired)"
+fi
+
+# Install sqlite3 / zsh-histdb
+if [[ $* == *--with-zsh-histdb* ]]; then
+    if grep "sqlite-history" "$HOME/.profile" >/dev/null; then
+        echo "[ zsh ] sqlite3 already installed"
+    else
+        echo "[ zsh ] installing sqlite3 hook"
+
+        git clone -q "https://github.com/larkery/zsh-histdb.git"
+
+        echo ". $SRC/zsh-histdb/history-timer.zsh" >>"$HOME/.profile"
+        echo "autoload -Uz add-zsh-hook" >>"$HOME/.profile"
+        mkdir "$HOME/.histdb"
+        chmod 700 "$HOME/.histdb"
+    fi
+else
+    echo "[ dotfiles ] Skipping sqlite3/zsh-histdb install (add --with-zsh-histdb if desired)"
+fi
+
+popd >/dev/null
