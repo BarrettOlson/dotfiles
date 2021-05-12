@@ -6,7 +6,7 @@ filetype off
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 set rtp+=/usr/local/opt/fzf
-call vundle#begin()
+" call vundle#begin()
 
 " Plugin 'VundleVim/Vundle.vim'
 " Plugin 'tpope/vim-fugitive'
@@ -31,7 +31,7 @@ call vundle#begin()
 " Plugin 'rizzatti/dash.vim'
 " Plugin 'fatih/vim-go'
 
-call vundle#end()
+" call vundle#end()
 
 " Set leader to comma
 let mapleader=","
