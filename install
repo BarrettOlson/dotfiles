@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Very convoluted but best way I can find to get the full path for the symlink
+# Very convoluted but need to get the full path for the symlink
 PWDS=$(pwd)
 DIRS=$(dirname $0)
 if [[ "$PWDS" != "$DIRS" ]]; then
@@ -45,6 +45,13 @@ if [[ $* == *--with-git-configs* ]]; then
     fi
 else
     echo "[ dotfiles ] Skipping writing basic git config (add --with-git-config if desired)"
+fi
+
+# install fzf if in devcontaier (mac_stepup.sh handles this via brew for macOS)
+if [[ $IN_DEVCONTAINER = true ]]; then
+    echo "[ dotfiles ] installing fzf for zsh"
+    git clone -q --depth 1 "https://github.com/junegunn/fzf.git" "$HOME/.fzf"
+    $HOME/.fzf/install --all --no-bash --no-fish
 fi
 
 # set up folder for our persistent vim logs
