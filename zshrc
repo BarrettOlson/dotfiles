@@ -39,6 +39,10 @@ bindkey -e
 bindkey "^[[3~" delete-char
 # END what do these do?
 
+# Easily scroll up and down through matches when searching history
+bindkey "$key[Up]" history-beginning-search-backward
+bindkey "$key[Down]" history-beginning-search-forward
+
 # Skip forward/back a word with opt-arrow
 bindkey '[C' forward-word
 bindkey '[D' backward-word
