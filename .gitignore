@@ -11,3 +11,4 @@ vim/autoload
 .DS_Store
 .vscode/
 zsh-histdb/
+always_forget_local.txt

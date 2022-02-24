@@ -1,0 +1,48 @@
+```
+# GITHUB
+```
+
+git checkout master
+git pull
+
+git checkout -b my-new-feature
+
+# do some coding
+
+git commit
+git push --set-upstream barrett my-new-feature
+git log
+
+```
+# PYTHON
+```
+# debug installs
+pip install "pdqhash>=0.2.0"
+export VENV=$(mktemp -d); python3 -m venv $VENV && source "$VENV/bin/activate" && pip install --upgrade pip && pip install "<package-testing>"
+export VENV=$(mktemp -d); python3 -m venv $VENV && source "$VENV/bin/activate" && pip freeze"
+
+# basic installs
+python3 -m venv ~/.venv/{project}
+source ~/.venv/{project}/bin/activate
+
+# Magnet
+- ctrl opt return = full screen
+- ctrl opt left/right arrow = left/right
+
+# Tmux 
+Create a new window	Ctrl-b c	
+Switch to window N	Ctrl-b <N>	(window numbering starts at 0)
+Detach	Ctrl-b d	
+Split pane vertically	Ctrl-b %	
+Split pane horizontally	Ctrl-b "	
+Switch panes	Ctrl-b <arrow>	(<arrow> means any arrow key)
+Kill current pane	Ctrl-b x	
+Zoom current pane	Ctrl-b z	(use again to un-zoom)
+Enter copy-mode	Ctrl-b [	navigate with cursor, Space to start selecting text, Enter to copy
+Paste copied text	Ctrl-b ]	
+List all keybindings	Ctrl-b ?	navigate with cursor, q to exit
+Detach all current sessions but this one: tmux detach -a
+
+
+https://tmuxcheatsheet.com/
+
